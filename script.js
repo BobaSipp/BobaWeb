@@ -7,8 +7,8 @@ const PIXEL_SCALE = 2;
 const w = Math.floor(window.innerWidth / PIXEL_SCALE);
 const h = Math.floor(window.innerHeight / PIXEL_SCALE);
 
-const camera = new THREE.PerspectiveCamera(55, w / h, 0.1, 100);
-camera.position.set(0, 1, 9);
+const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
+camera.position.set(0, 1.2, 10);
 
 const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
 renderer.setSize(w, h);
@@ -355,9 +355,9 @@ scene.add(dots);
 // --- Per-section cup states ---
 const sectionStates = [
   { x: 0, y: 0, z: 0, scale: 1,     mood: { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 } },
-  { x: 5, y: 0.2, z: -2, scale: 3.2, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
-  { x: 5, y: 0.2, z: -2, scale: 3.2, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
-  { x: 5, y: 0.2, z: -2, scale: 3.2, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
+  { x: 3.5, y: 0.1, z: 0, scale: 1.6, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
+  { x: 3.5, y: 0.1, z: 0, scale: 1.6, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
+  { x: 3.5, y: 0.1, z: 0, scale: 1.6, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
 ];
 
 // --- Live cup animation on section enter ---
