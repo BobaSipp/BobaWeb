@@ -2,210 +2,205 @@ gsap.registerPlugin(ScrollTrigger);
 
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x2d1b00);
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 2, 8);
+const PIXEL_SCALE = 3;
+const w = Math.floor(window.innerWidth / PIXEL_SCALE);
+const h = Math.floor(window.innerHeight / PIXEL_SCALE);
 
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
+const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
+camera.position.set(0, 1.5, 6);
+
+const renderer = new THREE.WebGLRenderer({ antialias: false });
+renderer.setSize(w, h);
+renderer.setPixelRatio(1);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
 
-const ambientLight = new THREE.AmbientLight(0xf8c8dc, 0.3);
-scene.add(ambientLight);
+const hemi = new THREE.HemisphereLight(0xe8a87c, 0x2d1b00, 0.6);
+scene.add(hemi);
 
-const mainLight = new THREE.DirectionalLight(0xffe4f0, 2);
-mainLight.position.set(5, 8, 5);
-mainLight.castShadow = true;
-scene.add(mainLight);
+const key = new THREE.DirectionalLight(0xffd4a3, 1.8);
+key.position.set(4, 6, 4);
+key.castShadow = true;
+scene.add(key);
 
-const fillLight = new THREE.DirectionalLight(0x7ec8e3, 0.8);
-fillLight.position.set(-3, 2, -4);
-scene.add(fillLight);
+const fill = new THREE.DirectionalLight(0xe8a87c, 0.6);
+fill.position.set(-3, 2, -3);
+scene.add(fill);
 
-const rimLight = new THREE.DirectionalLight(0xf8c8dc, 1.5);
-rimLight.position.set(-2, 1, 5);
-scene.add(rimLight);
-
-const pointLight = new THREE.PointLight(0xf8c8dc, 0.5, 10);
-pointLight.position.set(0, 3, 2);
-scene.add(pointLight);
+const back = new THREE.DirectionalLight(0xc97b5a, 0.8);
+back.position.set(0, 1, -5);
+scene.add(back);
 
 const cupGroup = new THREE.Group();
 scene.add(cupGroup);
 
-function createBobaCup() {
-  const group = new THREE.Group();
+function createCup() {
+  const g = new THREE.Group();
 
-  const cupGeo = new THREE.CylinderGeometry(1.2, 0.9, 2.2, 48, 1, true);
-  const cupMat = new THREE.MeshPhysicalMaterial({
-    color: 0xd4e8f0,
-    transparent: true,
-    opacity: 0.2,
-    roughness: 0.05,
-    metalness: 0.0,
-    clearcoat: 0.8,
-    clearcoatRoughness: 0.1,
-    side: THREE.DoubleSide,
-    envMapIntensity: 0.5,
+  const bodyMat = new THREE.MeshStandardMaterial({
+    color: 0xd4a080,
+    roughness: 0.6,
+    flatShading: true,
   });
-  const cup = new THREE.Mesh(cupGeo, cupMat);
-  cup.position.y = 0;
-  cup.castShadow = true;
-  group.add(cup);
 
-  const rimGeo = new THREE.TorusGeometry(1.2, 0.08, 16, 48);
-  const rimMat = new THREE.MeshPhysicalMaterial({
-    color: 0xf0d8e0,
-    roughness: 0.2,
-    metalness: 0.3,
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.1, 0.85, 2.0, 8, 4, true),
+    bodyMat
+  );
+  body.castShadow = true;
+  g.add(body);
+
+  const innerMat = new THREE.MeshStandardMaterial({
+    color: 0x5a3a20,
+    roughness: 0.8,
+    flatShading: true,
+    side: THREE.BackSide,
   });
-  const rim = new THREE.Mesh(rimGeo, rimMat);
-  rim.position.y = 1.1;
+
+  const inner = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.05, 0.8, 1.95, 8, 4, true),
+    innerMat
+  );
+  g.add(inner);
+
+  const rimMat = new THREE.MeshStandardMaterial({
+    color: 0xe8a87c,
+    roughness: 0.4,
+    flatShading: true,
+  });
+
+  const rim = new THREE.Mesh(
+    new THREE.TorusGeometry(1.1, 0.1, 6, 12),
+    rimMat
+  );
+  rim.position.y = 1.0;
   rim.rotation.x = Math.PI / 2;
-  group.add(rim);
+  g.add(rim);
 
-  const bottomGeo = new THREE.CircleGeometry(0.9, 48);
-  const bottomMat = new THREE.MeshPhysicalMaterial({
-    color: 0xf0d8e0,
-    roughness: 0.3,
-    metalness: 0.1,
-    side: THREE.DoubleSide,
-  });
-  const bottom = new THREE.Mesh(bottomGeo, bottomMat);
-  bottom.position.y = -1.1;
-  bottom.rotation.x = -Math.PI / 2;
-  group.add(bottom);
-
-  const teaGeo = new THREE.CylinderGeometry(1.05, 0.95, 1.4, 32);
-  const teaMat = new THREE.MeshPhysicalMaterial({
-    color: 0x8B5E3C,
-    transparent: true,
-    opacity: 0.7,
-    roughness: 0.1,
-    metalness: 0.0,
-    clearcoat: 0.3,
-  });
-  const tea = new THREE.Mesh(teaGeo, teaMat);
-  tea.position.y = 0.1;
-  group.add(tea);
-
-  const surfaceGeo = new THREE.CircleGeometry(1.05, 32);
-  const surfaceMat = new THREE.MeshPhysicalMaterial({
-    color: 0x7a4e2e,
-    transparent: true,
-    opacity: 0.5,
-    roughness: 0.0,
-    metalness: 0.0,
-    side: THREE.DoubleSide,
-  });
-  const surface = new THREE.Mesh(surfaceGeo, surfaceMat);
-  surface.position.y = 0.8;
-  surface.rotation.x = -Math.PI / 2;
-  group.add(surface);
-
-  const pearlMat = new THREE.MeshPhysicalMaterial({
-    color: 0x2a1a0a,
+  const bottomMat = new THREE.MeshStandardMaterial({
+    color: 0xc08060,
     roughness: 0.7,
-    metalness: 0.0,
+    flatShading: true,
   });
 
-  const pearlPositions = [
-    [-0.3, -0.25, 0.4], [0.4, -0.3, 0.2], [-0.5, -0.2, -0.2],
-    [0.2, -0.35, -0.4], [-0.1, -0.4, 0.0], [0.5, -0.25, -0.3],
-    [-0.4, -0.3, -0.4], [0.0, -0.2, 0.5], [0.3, -0.3, -0.5],
-    [-0.5, -0.35, 0.2], [0.6, -0.2, 0.1], [-0.2, -0.4, -0.3],
-  ];
+  const bottom = new THREE.Mesh(
+    new THREE.CircleGeometry(0.85, 8),
+    bottomMat
+  );
+  bottom.position.y = -1.0;
+  bottom.rotation.x = -Math.PI / 2;
+  g.add(bottom);
+
+  const teaMat = new THREE.MeshStandardMaterial({
+    color: 0x6b3a1f,
+    roughness: 0.3,
+    flatShading: true,
+  });
+
+  const tea = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.95, 0.9, 1.2, 8, 3),
+    teaMat
+  );
+  tea.position.y = 0.15;
+  g.add(tea);
+
+  const topMat = new THREE.MeshStandardMaterial({
+    color: 0x7a4e2e,
+    roughness: 0.2,
+    flatShading: true,
+  });
+
+  const top = new THREE.Mesh(
+    new THREE.CircleGeometry(0.95, 8),
+    topMat
+  );
+  top.position.y = 0.75;
+  top.rotation.x = -Math.PI / 2;
+  g.add(top);
+
+  const pearlMat = new THREE.MeshStandardMaterial({
+    color: 0x2a1a0a,
+    roughness: 0.8,
+    flatShading: true,
+  });
 
   const pearls = [];
-  pearlPositions.forEach(pos => {
-    const size = 0.1 + Math.random() * 0.06;
-    const pearlGeo = new THREE.SphereGeometry(size, 16, 16);
-    const pearl = new THREE.Mesh(pearlGeo, pearlMat);
-    pearl.position.set(pos[0], pos[1], pos[2]);
-    group.add(pearl);
-    pearls.push(pearl);
+  const pp = [
+    [-0.3, -0.1, 0.4], [0.4, -0.15, 0.2], [-0.5, -0.05, -0.2],
+    [0.2, -0.2, -0.4], [-0.1, -0.25, 0.0], [0.5, -0.1, -0.3],
+    [-0.4, -0.15, -0.4], [0.0, -0.05, 0.5], [0.3, -0.15, -0.5],
+    [-0.5, -0.2, 0.2], [0.6, -0.05, 0.1], [-0.2, -0.25, -0.3],
+    [0.1, 0.1, 0.3], [-0.3, 0.05, -0.1], [0.0, 0.15, -0.2],
+  ];
+
+  pp.forEach(p => {
+    const s = 0.08 + Math.random() * 0.06;
+    const m = new THREE.Mesh(new THREE.SphereGeometry(s, 6, 6), pearlMat);
+    m.position.set(p[0], p[1], p[2]);
+    g.add(m);
+    pearls.push(m);
   });
 
-  const iceMat = new THREE.MeshPhysicalMaterial({
-    color: 0xc8e8f0,
-    transparent: true,
-    opacity: 0.4,
-    roughness: 0.0,
-    metalness: 0.0,
-    clearcoat: 0.5,
+  const strawMat = new THREE.MeshStandardMaterial({
+    color: 0xf0e0d0,
+    roughness: 0.5,
+    flatShading: true,
   });
 
-  [[-0.2, 0.5, 0.5], [0.3, 0.55, -0.4], [-0.5, 0.6, 0.1], [0.5, 0.45, 0.3]].forEach(pos => {
-    const iceGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    const ice = new THREE.Mesh(iceGeo, iceMat);
-    ice.position.set(pos[0], pos[1], pos[2]);
-    ice.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-    group.add(ice);
+  const straw = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.04, 0.04, 2.2, 6),
+    strawMat
+  );
+  straw.position.set(0.6, 0.6, 0.6);
+  straw.rotation.z = -0.25;
+  straw.rotation.x = 0.15;
+  g.add(straw);
+
+  const tipMat = new THREE.MeshStandardMaterial({
+    color: 0xd47a5a,
+    roughness: 0.5,
+    flatShading: true,
   });
 
-  const strawMat = new THREE.MeshPhysicalMaterial({
-    color: 0xf0e8e0,
-    roughness: 0.4,
-    metalness: 0.1,
-  });
+  const tip = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.04, 0.04, 0.12, 6),
+    tipMat
+  );
+  tip.position.copy(straw.position);
+  const off = new THREE.Vector3(0, 1.1, 0);
+  off.applyQuaternion(straw.quaternion);
+  tip.position.add(off);
+  g.add(tip);
 
-  const strawGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.4, 8);
-  const straw = new THREE.Mesh(strawGeo, strawMat);
-  straw.position.set(0.6, 0.8, 0.6);
-  straw.rotation.z = -0.3;
-  straw.rotation.x = 0.2;
-  group.add(straw);
-
-  const strawTopMat = new THREE.MeshPhysicalMaterial({
-    color: 0xd47a9e,
-    roughness: 0.3,
-    metalness: 0.0,
-  });
-  const strawTopGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.15, 8);
-  const strawTop = new THREE.Mesh(strawTopGeo, strawTopMat);
-  strawTop.position.copy(straw.position);
-  const offset = new THREE.Vector3(0, 1.2, 0);
-  offset.applyQuaternion(straw.quaternion);
-  strawTop.position.add(offset);
-  group.add(strawTop);
-
-  return { group, cup, tea, surface, pearls, straw };
+  return { g, pearls };
 }
 
-const boba = createBobaCup();
-cupGroup.add(boba.group);
+const boba = createCup();
+cupGroup.add(boba.g);
 
 const glowMat = new THREE.ShaderMaterial({
-  uniforms: {
-    time: { value: 0 },
-    color: { value: new THREE.Color(0xf8c8dc) },
-  },
+  uniforms: { time: { value: 0 } },
   vertexShader: `
-    varying vec3 vNormal;
-    varying vec3 vPosition;
+    varying vec3 vN; varying vec3 vP;
     void main() {
-      vNormal = normalize(normalMatrix * normal);
-      vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+      vN = normalize(normalMatrix * normal);
+      vP = (modelViewMatrix * vec4(position, 1.0)).xyz;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `,
   fragmentShader: `
     uniform float time;
-    uniform vec3 color;
-    varying vec3 vNormal;
-    varying vec3 vPosition;
+    varying vec3 vN; varying vec3 vP;
     void main() {
-      vec3 viewDir = normalize(-vPosition);
-      float rim = 1.0 - max(0.0, dot(viewDir, vNormal));
-      rim = pow(rim, 3.0);
-      float pulse = 0.7 + 0.3 * sin(time * 0.5 + vPosition.y * 2.0);
-      vec3 glow = color * rim * pulse;
-      gl_FragColor = vec4(glow, rim * 0.6);
+      vec3 c = vec3(1.0, 0.77, 0.56);
+      vec3 d = normalize(-vP);
+      float r = 1.0 - max(0.0, dot(d, vN));
+      r = pow(r, 2.0);
+      float p = 0.6 + 0.4 * sin(time * 0.8 + vP.y * 3.0);
+      gl_FragColor = vec4(c * r * p, r * 0.5);
     }
   `,
   transparent: true,
@@ -214,106 +209,109 @@ const glowMat = new THREE.ShaderMaterial({
   depthWrite: false,
 });
 
-const glowGeo = new THREE.CylinderGeometry(1.25, 0.95, 2.3, 48, 1, true);
-const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-glowMesh.position.y = 0;
-boba.group.add(glowMesh);
+const glow = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.15, 0.9, 2.1, 8, 4, true),
+  glowMat
+);
+glow.position.y = 0;
+boba.g.add(glow);
 
-const shadowMat = new THREE.MeshBasicMaterial({
-  color: 0xf8c8dc,
+const floorMat = new THREE.MeshStandardMaterial({
+  color: 0xc97b5a,
   transparent: true,
-  opacity: 0.08,
+  opacity: 0.12,
+  flatShading: true,
 });
-const shadowGeo = new THREE.CircleGeometry(1.8, 32);
-const shadow = new THREE.Mesh(shadowGeo, shadowMat);
-shadow.rotation.x = -Math.PI / 2;
-shadow.position.y = -1.3;
-cupGroup.add(shadow);
 
-const particlesGeo = new THREE.BufferGeometry();
-const particlesCount = 400;
-const positions = new Float32Array(particlesCount * 3);
-for (let i = 0; i < particlesCount * 3; i++) {
-  positions[i] = (Math.random() - 0.5) * 20;
-}
-particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const particlesMat = new THREE.PointsMaterial({
-  color: 0xf8c8dc,
-  size: 0.03,
+const floor = new THREE.Mesh(
+  new THREE.CircleGeometry(2.5, 8),
+  floorMat
+);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -1.2;
+cupGroup.add(floor);
+
+const dotMat = new THREE.PointsMaterial({
+  color: 0xe8a87c,
+  size: 0.04,
   transparent: true,
-  opacity: 0.4,
-  blending: THREE.AdditiveBlending,
+  opacity: 0.3,
 });
-const particles = new THREE.Points(particlesGeo, particlesMat);
-scene.add(particles);
 
-const tl = gsap.timeline({
-  scrollTrigger: {
-    trigger: 'body',
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 1.5,
+const dotGeo = new THREE.BufferGeometry();
+const dotPos = new Float32Array(200 * 3);
+for (let i = 0; i < 200 * 3; i++) dotPos[i] = (Math.random() - 0.5) * 16;
+dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPos, 3));
+const dots = new THREE.Points(dotGeo, dotMat);
+scene.add(dots);
+
+const sections = document.querySelectorAll('.section');
+const snapStep = 1 / (sections.length - 1);
+
+ScrollTrigger.create({
+  trigger: 'body',
+  start: 'top top',
+  end: 'bottom bottom',
+  snap: snapStep,
+  scrub: 1.2,
+  onUpdate: self => {
+    const p = self.progress;
+    const idx = Math.round(p / snapStep);
+
+    boba.g.rotation.y = p * Math.PI * 4;
+
+    if (idx === 0) {
+      boba.g.position.y = 0;
+      boba.g.position.x = 0;
+      boba.g.position.z = 0;
+      boba.g.scale.set(1, 1, 1);
+    } else if (idx === 1) {
+      boba.g.position.y = 0.3;
+      boba.g.position.x = 0.8;
+      boba.g.position.z = 0.2;
+      boba.g.scale.set(1.05, 1.05, 1.05);
+    } else if (idx === 2) {
+      boba.g.position.y = 0.6;
+      boba.g.position.x = -0.7;
+      boba.g.position.z = -0.3;
+      boba.g.scale.set(1.1, 1.1, 1.1);
+    } else if (idx === 3) {
+      boba.g.position.y = 0.2;
+      boba.g.position.x = 0.4;
+      boba.g.position.z = 0.5;
+      boba.g.scale.set(0.95, 0.95, 0.95);
+    }
   },
 });
 
-tl.to(boba.group.rotation, { y: Math.PI * 4, ease: 'none' }, 0)
-  .to(boba.group.position, { y: 1.0, ease: 'sine.inOut' }, 0)
-  .to(boba.group.position, { x: 2.0, ease: 'sine.inOut' }, 0)
-  .to(boba.group.position, { x: -1.5, ease: 'sine.inOut' }, 0.5)
-  .to(boba.group.position, { z: 0.5, ease: 'sine.inOut' }, 0.25)
-  .to(boba.group.position, { z: -0.8, ease: 'sine.inOut' }, 0.7)
-  .to(boba.group.scale, { x: 1.1, y: 1.1, z: 1.1, ease: 'sine.inOut' }, 0)
-  .to(boba.group.rotation, { x: 0.15, z: -0.1, ease: 'sine.inOut' }, 0)
-  .to(boba.group.rotation, { y: Math.PI * 6, ease: 'none' }, 0.5);
-
-if (boba.straw) {
-  gsap.to(boba.straw.rotation, {
-    z: -0.5, x: 0.4,
-    ease: 'sine.inOut',
-    scrollTrigger: {
-      trigger: 'body',
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 1,
-    },
-  });
-}
-
 document.addEventListener('mousemove', e => {
-  const x = (e.clientX / window.innerWidth - 0.5) * 0.3;
-  const y = (e.clientY / window.innerHeight - 0.5) * 0.2;
-  cupGroup.rotation.y += (x - cupGroup.rotation.y) * 0.02;
-  cupGroup.rotation.x += (-y - cupGroup.rotation.x) * 0.02;
+  const x = (e.clientX / window.innerWidth - 0.5) * 0.2;
+  const y = (e.clientY / window.innerHeight - 0.5) * 0.15;
+  cupGroup.rotation.y += (x - cupGroup.rotation.y) * 0.03;
+  cupGroup.rotation.x += (-y - cupGroup.rotation.x) * 0.03;
 });
 
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  const nw = Math.floor(window.innerWidth / PIXEL_SCALE);
+  const nh = Math.floor(window.innerHeight / PIXEL_SCALE);
+  camera.aspect = nw / nh;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(nw, nh);
 });
 
 const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);
-  const elapsed = clock.getElapsedTime();
+  const t = clock.getElapsedTime();
 
-  boba.pearls.forEach((pearl, i) => {
-    pearl.position.y += Math.sin(elapsed * 1.2 + i * 2) * 0.0005;
-    pearl.rotation.x += 0.01;
-    pearl.rotation.z += 0.01;
+  boba.pearls.forEach((p, i) => {
+    p.position.y += Math.sin(t * 1.5 + i * 2) * 0.0008;
   });
 
-  if (boba.surface) {
-    boba.surface.material.opacity = 0.4 + Math.sin(elapsed * 0.8) * 0.1;
-  }
-
-  glowMat.uniforms.time.value = elapsed;
-
-  particles.rotation.y += 0.0005;
-  particles.rotation.x += 0.0002;
-
-  camera.position.x = Math.sin(elapsed * 0.05) * 0.5;
+  glowMat.uniforms.time.value = t;
+  dots.rotation.y += 0.0008;
+  camera.position.x = Math.sin(t * 0.04) * 0.3;
 
   renderer.render(scene, camera);
 }
