@@ -12,6 +12,7 @@ body {
   color: #3d2817;
   overflow: hidden;
   height: 100vh;
+  font-size: 16px;
 }
 
 #scroll-container {
@@ -69,13 +70,12 @@ body {
 
 /* --- INTRO: centered title --- */
 .overlay .t-top {
-  font-size: 0.9rem;
+  font-size: 1.6rem;
   color: #5a3a20;
-  text-shadow: 3px 3px 0 #e8c8a8;
-  letter-spacing: 3px;
-  margin-bottom: 0.5rem;
+  text-shadow: 4px 4px 0 #e8c8a8;
+  letter-spacing: 4px;
   position: absolute;
-  top: 14%;
+  top: 12%;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -88,21 +88,21 @@ body {
 }
 
 .overlay .t-sub {
-  font-size: 0.5rem;
+  font-size: 0.85rem;
   color: #7a5030;
-  text-shadow: 2px 2px 0 #e8c8a8;
-  letter-spacing: 2px;
+  text-shadow: 3px 3px 0 #e8c8a8;
+  letter-spacing: 3px;
   position: absolute;
-  bottom: 22%;
+  bottom: 20%;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .overlay .t-hint {
-  font-size: 0.4rem;
+  font-size: 0.7rem;
   color: #b08060;
   position: absolute;
-  bottom: 12%;
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
   animation: blink 1s steps(2) infinite;
@@ -114,38 +114,31 @@ body {
 }
 
 /* --- INFO BOXES: left side, lighter beige --- */
-.overlay h2 {
-  font-size: 0.85rem;
-  color: #5a3a20;
-  text-shadow: 2px 2px 0 #e8c8a8;
-  letter-spacing: 2px;
-  margin-bottom: 1rem;
-}
-
 .info-box {
   position: absolute;
   left: 5%;
   top: 50%;
   transform: translateY(-50%);
-  max-width: 320px;
+  max-width: 380px;
+  width: 90%;
   background: #faf0e4;
   border: 3px solid #d4a080;
-  padding: 1.5rem 1.8rem;
+  padding: 2rem 2rem;
   box-shadow: 6px 6px 0 #c89070, inset 0 0 0 2px #f5e0c8;
   text-align: left;
 }
 
 .info-box h2 {
-  font-size: 0.75rem;
+  font-size: 1.2rem;
   color: #5a3a20;
-  text-shadow: 2px 2px 0 #e8c8a8;
-  letter-spacing: 2px;
-  margin-bottom: 1rem;
+  text-shadow: 3px 3px 0 #e8c8a8;
+  letter-spacing: 3px;
+  margin-bottom: 1.2rem;
   text-align: left;
 }
 
 .info-box p {
-  font-size: 0.45rem;
+  font-size: 0.7rem;
   line-height: 2;
   color: #5a3a20;
 }
@@ -153,15 +146,15 @@ body {
 .grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.5rem;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
 }
 
 .grid span {
   background: #fdf5ec;
   border: 2px solid #d4a080;
-  padding: 0.35rem 0.7rem;
-  font-size: 0.38rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.6rem;
   color: #5a3a20;
   letter-spacing: 1px;
 }
@@ -172,24 +165,24 @@ body {
 }
 
 .credit {
-  font-size: 0.35rem;
+  font-size: 0.55rem;
   color: #a07050;
   margin-top: 1.2rem;
 }
 
 .links {
   display: flex;
-  gap: 0.6rem;
-  margin-top: 1rem;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
   flex-wrap: wrap;
 }
 
 .links a {
-  font-size: 0.4rem;
+  font-size: 0.65rem;
   color: #5a3a20;
   background: #fdf5ec;
   border: 2px solid #d4a080;
-  padding: 0.35rem 0.8rem;
+  padding: 0.5rem 1rem;
   text-decoration: none;
   letter-spacing: 1px;
   display: inline-block;
@@ -204,13 +197,13 @@ body {
 
 .corner {
   position: absolute;
-  font-size: 0.4rem;
+  font-size: 0.7rem;
   color: #c89070;
   letter-spacing: 2px;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
-.corner.tl { top: 8%; left: 6%; }
-.corner.tr { top: 8%; right: 6%; }
-.corner.bl { bottom: 8%; left: 6%; }
-.corner.br { bottom: 8%; right: 6%; }
+.corner.tl { top: 6%; left: 5%; }
+.corner.tr { top: 6%; right: 5%; }
+.corner.bl { bottom: 6%; left: 5%; }
+.corner.br { bottom: 6%; right: 5%; }
