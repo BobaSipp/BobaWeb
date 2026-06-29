@@ -11,7 +11,7 @@ const h = Math.floor(window.innerHeight / PIXEL_SCALE);
 const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
 camera.position.set(0, 1.5, 6);
 
-const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setSize(w, h);
 renderer.setPixelRatio(1);
 renderer.setClearColor(0xf5e0c8, 1);
@@ -35,8 +35,8 @@ const back = new THREE.DirectionalLight(0xd4a080, 0.6);
 back.position.set(0, 1, -5);
 scene.add(back);
 
-const cupPivot = new THREE.Group();
-scene.add(cupPivot);
+const cupGroup = new THREE.Group();
+scene.add(cupGroup);
 
 function createCup() {
   const g = new THREE.Group();
@@ -66,13 +66,13 @@ function createCup() {
   rim.rotation.x = Math.PI / 2;
   g.add(rim);
 
-  const bottomMat = new THREE.MeshStandardMaterial({
+  const bMat = new THREE.MeshStandardMaterial({
     color: 0xc89070, roughness: 0.7, flatShading: true,
   });
-  const bottom = new THREE.Mesh(new THREE.CircleGeometry(0.85, 8), bottomMat);
-  bottom.position.y = -1.0;
-  bottom.rotation.x = -Math.PI / 2;
-  g.add(bottom);
+  const btm = new THREE.Mesh(new THREE.CircleGeometry(0.85, 8), bMat);
+  btm.position.y = -1.0;
+  btm.rotation.x = -Math.PI / 2;
+  g.add(btm);
 
   const teaMat = new THREE.MeshStandardMaterial({
     color: 0x6b3a1f, roughness: 0.3, flatShading: true,
@@ -94,7 +94,6 @@ function createCup() {
   const pearlMat = new THREE.MeshStandardMaterial({
     color: 0x2a1a0a, roughness: 0.8, flatShading: true,
   });
-
   const pearls = [];
   const pp = [
     [-0.3, -0.1, 0.4], [0.4, -0.15, 0.2], [-0.5, -0.05, -0.2],
@@ -138,9 +137,9 @@ function createCup() {
 }
 
 const boba = createCup();
-cupPivot.add(boba.g);
+cupGroup.add(boba.g);
 
-// --- Spill particle system ---
+// --- Spill particles ---
 const spillCount = 30;
 const spillPool = [];
 const spillMat = new THREE.MeshStandardMaterial({
@@ -196,10 +195,9 @@ function updateSpill(dt) {
   });
 }
 
-// --- Drag interaction ---
+// --- Drag ---
 let isDragging = false;
 let prevMouse = { x: 0, y: 0 };
-let dragVel = { x: 0, y: 0 };
 
 function getCupOrigin() {
   const p = new THREE.Vector3();
@@ -218,19 +216,15 @@ renderer.domElement.addEventListener('mousedown', e => {
   isDragging = true;
   prevMouse.x = e.clientX;
   prevMouse.y = e.clientY;
-  dragVel.x = 0;
-  dragVel.y = 0;
 });
 
 window.addEventListener('mousemove', e => {
   if (!isDragging) return;
   const dx = e.clientX - prevMouse.x;
   const dy = e.clientY - prevMouse.y;
-  dragVel.x = dx;
-  dragVel.y = dy;
-  cupPivot.rotation.y += dx * 0.01;
-  cupPivot.rotation.x += dy * 0.008;
-  cupPivot.rotation.x = Math.max(-0.5, Math.min(0.5, cupPivot.rotation.x));
+  cupGroup.rotation.y += dx * 0.01;
+  cupGroup.rotation.x += dy * 0.008;
+  cupGroup.rotation.x = Math.max(-0.5, Math.min(0.5, cupGroup.rotation.x));
 
   const speed = Math.sqrt(dx * dx + dy * dy);
   if (speed > 5) {
@@ -250,8 +244,6 @@ renderer.domElement.addEventListener('touchstart', e => {
   isDragging = true;
   prevMouse.x = t.clientX;
   prevMouse.y = t.clientY;
-  dragVel.x = 0;
-  dragVel.y = 0;
 });
 
 window.addEventListener('touchmove', e => {
@@ -259,11 +251,9 @@ window.addEventListener('touchmove', e => {
   const t = e.touches[0];
   const dx = t.clientX - prevMouse.x;
   const dy = t.clientY - prevMouse.y;
-  dragVel.x = dx;
-  dragVel.y = dy;
-  cupPivot.rotation.y += dx * 0.01;
-  cupPivot.rotation.x += dy * 0.008;
-  cupPivot.rotation.x = Math.max(-0.5, Math.min(0.5, cupPivot.rotation.x));
+  cupGroup.rotation.y += dx * 0.01;
+  cupGroup.rotation.x += dy * 0.008;
+  cupGroup.rotation.x = Math.max(-0.5, Math.min(0.5, cupGroup.rotation.x));
 
   const speed = Math.sqrt(dx * dx + dy * dy);
   if (speed > 5) {
@@ -278,7 +268,7 @@ window.addEventListener('touchmove', e => {
 
 window.addEventListener('touchend', () => { isDragging = false; });
 
-// --- Floor shadow ---
+// --- Floor ---
 const floorMat = new THREE.MeshStandardMaterial({
   color: 0xd4a080, transparent: true, opacity: 0.1, flatShading: true,
 });
@@ -298,16 +288,21 @@ dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPos, 3));
 const dots = new THREE.Points(dotGeo, dotMat);
 scene.add(dots);
 
-// --- Snap scroll + cup animation ---
+// --- Per-section cup moods ---
+const moods = [
+  { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 },
+  { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 },
+  { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 },
+  { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 },
+];
+
+let currentMood = moods[0];
+let prevMood = moods[0];
+let moodBlend = 0;
+
+// --- Snap scroll ---
 const sections = document.querySelectorAll('.section');
 const snapStep = 1 / (sections.length - 1);
-
-const cupStates = [
-  { x: 0, y: 0, z: 0, scale: 1 },
-  { x: 2.5, y: 0.3, z: 0, scale: 1 },
-  { x: 2.5, y: 0.3, z: 0, scale: 1 },
-  { x: 2.5, y: 0.3, z: 0, scale: 1 },
-];
 
 ScrollTrigger.create({
   trigger: 'body',
@@ -316,16 +311,13 @@ ScrollTrigger.create({
   snap: snapStep,
   scrub: 1.2,
   onUpdate: self => {
-    const p = self.progress;
-    const idx = Math.round(p / snapStep);
-    const st = cupStates[idx];
-    boba.g.position.x = st.x;
-    boba.g.position.y = st.y;
-    boba.g.position.z = st.z;
-    boba.g.scale.set(st.scale, st.scale, st.scale);
+    const idx = Math.round(self.progress / snapStep);
+    prevMood = currentMood;
+    currentMood = moods[idx];
+    moodBlend = 0;
 
     sections.forEach((sec, i) => {
-      const wrap = sec.querySelector('.text-wrap');
+      const wrap = sec.querySelector('.overlay');
       if (wrap) {
         wrap.style.opacity = i === idx ? 1 : 0;
         wrap.style.transition = 'opacity 0.6s ease';
@@ -344,10 +336,34 @@ window.addEventListener('resize', () => {
 
 const clock = new THREE.Clock();
 
+function lerp(a, b, t) { return a + (b - a) * t; }
+
 function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
   const dt = 0.016;
+
+  moodBlend = Math.min(1, moodBlend + dt * 2);
+
+  const m = {
+    spin: lerp(prevMood.spin, currentMood.spin, moodBlend),
+    tilt: lerp(prevMood.tilt, currentMood.tilt, moodBlend),
+    bob: lerp(prevMood.bob, currentMood.bob, moodBlend),
+    bounce: lerp(prevMood.bounce, currentMood.bounce, moodBlend),
+    stretch: lerp(prevMood.stretch, currentMood.stretch, moodBlend),
+  };
+
+  // Cup always centered — it moves IN PLACE (alive animations)
+  boba.g.position.x = Math.sin(t * m.spin * 0.5) * 0.3 * m.bob;
+  boba.g.position.y = Math.sin(t * m.spin * 1.2) * 0.15 * m.bob + m.bounce * Math.abs(Math.sin(t * 2)) * 0.3;
+  boba.g.position.z = Math.cos(t * m.spin * 0.3) * 0.2 * m.bob;
+
+  boba.g.rotation.y = t * m.spin * 0.3;
+  boba.g.rotation.x = Math.sin(t * 0.5) * m.tilt;
+  boba.g.rotation.z = Math.cos(t * 0.7) * m.tilt * 0.5;
+
+  const s = 1 + m.stretch * Math.sin(t * 2) * 0.1;
+  boba.g.scale.set(s, 1 / (1 + (s - 1) * 0.3), s);
 
   boba.pearls.forEach((p, i) => {
     p.position.y += Math.sin(t * 1.5 + i * 2) * 0.0008;
@@ -358,8 +374,8 @@ function animate() {
   dots.rotation.y += 0.0008;
 
   if (!isDragging) {
-    cupPivot.rotation.y += (0 - cupPivot.rotation.y) * 0.02;
-    cupPivot.rotation.x += (0 - cupPivot.rotation.x) * 0.02;
+    cupGroup.rotation.y += (0 - cupGroup.rotation.y) * 0.02;
+    cupGroup.rotation.x += (0 - cupGroup.rotation.x) * 0.02;
   }
 
   camera.position.x = Math.sin(t * 0.04) * 0.3;

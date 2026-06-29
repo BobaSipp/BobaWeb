@@ -46,49 +46,49 @@ body {
   pointer-events: none;
 }
 
-.text-wrap {
+.overlay {
   pointer-events: auto;
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
 }
 
-/* --- INTRO: text around the centered cup --- */
-.center-cup .t {
-  position: absolute;
-  font-size: 0.65rem;
-  color: #7a5030;
-  text-shadow: 2px 2px 0 #e8c8a8;
-  letter-spacing: 2px;
-}
-
-.center-cup .t-top {
-  top: 12%;
-  left: 50%;
-  transform: translateX(-50%);
+.overlay .t-top {
   font-size: 0.9rem;
   color: #5a3a20;
   text-shadow: 3px 3px 0 #e8c8a8;
+  letter-spacing: 3px;
+  margin-bottom: 0.5rem;
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.center-cup .t-left {
-  left: 6%;
-  top: 50%;
-  transform: translateY(-50%);
+.overlay .t-sub {
+  font-size: 0.5rem;
+  color: #7a5030;
+  text-shadow: 2px 2px 0 #e8c8a8;
+  letter-spacing: 2px;
+  position: absolute;
+  bottom: 22%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.center-cup .t-right {
-  right: 6%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.center-cup .t-bottom {
+.overlay .t-hint {
+  font-size: 0.4rem;
+  color: #b08060;
+  position: absolute;
   bottom: 12%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.45rem;
-  color: #b08060;
   animation: blink 1s steps(2) infinite;
 }
 
@@ -97,37 +97,27 @@ body {
   50% { opacity: 0; }
 }
 
-/* --- OTHER PAGES: text on the left --- */
-.left-text {
-  position: absolute;
-  left: 6%;
-  top: 50%;
-  transform: translateY(-50%);
-  max-width: 360px;
-  background: rgba(245, 224, 200, 0.85);
-  border: 3px solid #d4a080;
-  padding: 1.8rem 2rem;
-  box-shadow: 6px 6px 0 #c89070, inset 0 0 0 2px #e8c8a8;
-}
-
-.left-text h2 {
-  font-size: 0.9rem;
+.overlay h2 {
+  font-size: 0.85rem;
   color: #5a3a20;
-  margin-bottom: 1rem;
-  letter-spacing: 2px;
   text-shadow: 2px 2px 0 #e8c8a8;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
 }
 
-.left-text p {
-  font-size: 0.5rem;
-  line-height: 1.9;
+.overlay p {
+  font-size: 0.48rem;
+  line-height: 2;
   color: #7a5030;
+  max-width: 380px;
 }
 
 .grid {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+  justify-content: center;
+  max-width: 340px;
 }
 
 .grid span {
@@ -148,9 +138,4 @@ body {
   font-size: 0.35rem;
   color: #b08060;
   margin-top: 1.2rem;
-}
-
-.hint {
-  font-size: 0.45rem;
-  color: #b08060;
 }
