@@ -66,6 +66,7 @@ body {
   justify-content: center;
   text-align: center;
   padding: 2rem;
+  transition: opacity 0.3s ease;
 }
 
 /* --- INTRO: centered title --- */
@@ -119,13 +120,17 @@ body {
   left: 5%;
   top: 50%;
   transform: translateY(-50%);
-  max-width: 380px;
+  max-width: 420px;
   width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
   background: #faf0e4;
   border: 3px solid #d4a080;
   padding: 2rem 2rem;
   box-shadow: 6px 6px 0 #c89070, inset 0 0 0 2px #f5e0c8;
   text-align: left;
+  scrollbar-width: thin;
+  scrollbar-color: #d4a080 transparent;
 }
 
 .info-box h2 {
@@ -141,6 +146,65 @@ body {
   font-size: 0.7rem;
   line-height: 2;
   color: #5a3a20;
+  margin-bottom: 0.6rem;
+}
+
+.info-box p.p2 {
+  font-size: 0.55rem;
+  line-height: 1.8;
+  color: #7a5030;
+}
+
+.skill-group {
+  margin-top: 1rem;
+}
+
+.skill-group h3 {
+  font-size: 0.5rem;
+  color: #8a6050;
+  letter-spacing: 1px;
+  margin-bottom: 0.4rem;
+}
+
+.project {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 2px solid #e8d0b8;
+}
+
+.project h3 {
+  font-size: 0.55rem;
+  color: #5a3a20;
+  letter-spacing: 1px;
+  margin-bottom: 0.3rem;
+}
+
+.project p {
+  font-size: 0.45rem;
+  line-height: 1.7;
+  color: #7a5030;
+  margin-bottom: 0.4rem;
+}
+
+.project-links {
+  margin-top: 0.3rem;
+}
+
+.project-links a {
+  font-size: 0.4rem;
+  color: #5a3a20;
+  background: #fdf5ec;
+  border: 2px solid #d4a080;
+  padding: 0.3rem 0.6rem;
+  text-decoration: none;
+  letter-spacing: 1px;
+  display: inline-block;
+  pointer-events: auto;
+}
+
+.project-links a:hover {
+  background: #d4a080;
+  color: #faf0e4;
 }
 
 .grid {

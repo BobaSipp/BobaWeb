@@ -1,5 +1,3 @@
-gsap.registerPlugin(ScrollTrigger);
-
 const scrollContainer = document.getElementById('scroll-container');
 const canvasContainer = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
@@ -9,7 +7,7 @@ const w = Math.floor(window.innerWidth / PIXEL_SCALE);
 const h = Math.floor(window.innerHeight / PIXEL_SCALE);
 
 const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
-camera.position.set(0, 1.5, 12);
+camera.position.set(0, 2.8, 14);
 
 const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
 renderer.setSize(w, h);
@@ -138,6 +136,7 @@ function createCup() {
 
 const boba = createCup();
 boba.g.scale.set(0.9, 0.9, 0.9);
+boba.g.position.y = 1.2;
 cupGroup.add(boba.g);
 
 // --- Spill particles ---
@@ -339,7 +338,7 @@ const floorMat = new THREE.MeshStandardMaterial({
 });
 const floor = new THREE.Mesh(new THREE.CircleGeometry(3, 8), floorMat);
 floor.rotation.x = -Math.PI / 2;
-floor.position.y = -1.5;
+floor.position.y = -0.3;
 scene.add(floor);
 
 // --- BG dots ---
@@ -353,40 +352,35 @@ dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPos, 3));
 const dots = new THREE.Points(dotGeo, dotMat);
 scene.add(dots);
 
-// --- Per-section cup states ---
-const sectionStates = [
-  { x: 0, y: 0, z: 0, scale: 1,   mood: { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 } },
-  { x: 2.5, y: 0, z: 0, scale: 1.3, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
-  { x: 2.5, y: 0, z: 0, scale: 1.3, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
-  { x: 2.5, y: 0, z: 0, scale: 1.3, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
+// --- Per-section moods ---
+const sectionMoods = [
+  { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 },
+  { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 },
+  { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 },
+  { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 },
+  { spin: 0.5, tilt: 0.08, bob: 0.3, bounce: 0.05, stretch: 0 },
 ];
 
-// --- Live cup animation on section enter ---
+// --- Scroll progress & overlay visibility ---
 const sections = document.querySelectorAll('.section');
 let currentSectionIdx = 0;
+let scrollProgress = 0;
+let smoothScrollY = 0;
 
-function animateCupTo(idx) {
-  if (idx < 0 || idx >= sectionStates.length || idx === currentSectionIdx) return;
-  currentSectionIdx = idx;
-  const st = sectionStates[idx];
-
-  gsap.to(boba.g.position, { x: st.x, y: st.y, z: st.z, duration: 0.5, ease: 'power2.out' });
-  gsap.to(boba.g.scale, { x: st.scale, y: st.scale, z: st.scale, duration: 0.5, ease: 'power2.out' });
+scrollContainer.addEventListener('scroll', () => {
+  const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+  scrollProgress = maxScroll > 0 ? scrollContainer.scrollTop / maxScroll : 0;
 
   sections.forEach((sec, i) => {
+    const rect = sec.getBoundingClientRect();
     const wrap = sec.querySelector('.overlay');
-    if (wrap) wrap.style.opacity = i === idx ? 1 : 0;
-  });
-}
+    const mid = rect.top + rect.height / 2;
+    const viewMid = window.innerHeight / 2;
+    const dist = Math.abs(mid - viewMid) / (window.innerHeight * 0.6);
+    const opacity = Math.max(0, Math.min(1, 1 - dist));
+    if (wrap) wrap.style.opacity = Math.max(0.01, opacity);
 
-sections.forEach((sec, i) => {
-  ScrollTrigger.create({
-    trigger: sec,
-    scroller: scrollContainer,
-    start: 'top center',
-    end: 'bottom center',
-    onEnter: () => animateCupTo(i),
-    onEnterBack: () => animateCupTo(i),
+    if (wrap && opacity > 0.5) currentSectionIdx = i;
   });
 });
 
@@ -405,20 +399,26 @@ function animate() {
   const t = clock.getElapsedTime();
   const dt = 0.016;
 
-  const mood = sectionStates[currentSectionIdx].mood;
-  const baseScale = sectionStates[currentSectionIdx].scale;
+  const mood = sectionMoods[currentSectionIdx];
 
-  const idleX = Math.sin(t * mood.spin * 0.5) * 0.15 * mood.bob;
-  const idleY = Math.sin(t * mood.spin * 1.2) * 0.08 * mood.bob + mood.bounce * Math.abs(Math.sin(t * 2)) * 0.15;
-  const idleZ = Math.cos(t * mood.spin * 0.3) * 0.1 * mood.bob;
+  // Scroll-driven animation — cup spins and tilts as you scroll
+  const scrollRotY = scrollProgress * Math.PI * 3;
+  const scrollTiltX = Math.sin(scrollProgress * Math.PI * 2) * 0.15;
+  const scrollTiltZ = Math.cos(scrollProgress * Math.PI * 2) * 0.08;
+  const scrollBob = Math.sin(scrollProgress * Math.PI * 4) * 0.12;
 
-  boba.g.position.x += (idleX - (boba.g.position.x - sectionStates[currentSectionIdx].x)) * 0.05;
-  boba.g.position.y += (idleY - (boba.g.position.y - sectionStates[currentSectionIdx].y)) * 0.05;
-  boba.g.position.z += (idleZ - (boba.g.position.z - sectionStates[currentSectionIdx].z)) * 0.05;
+  // Idle animation (subtle on top of scroll motion)
+  const idleRotY = t * mood.spin * 0.15;
+  const idleTiltX = Math.sin(t * 0.5) * mood.tilt * 0.5;
+  const idleTiltZ = Math.cos(t * 0.7) * mood.tilt * 0.3;
+  const idleBob = Math.sin(t * mood.spin * 1.2) * 0.04 * mood.bob;
 
-  boba.g.rotation.y = t * mood.spin * 0.3;
-  boba.g.rotation.x = Math.sin(t * 0.5) * mood.tilt;
-  boba.g.rotation.z = Math.cos(t * 0.7) * mood.tilt * 0.5;
+  if (!isDragging) {
+    boba.g.rotation.y = scrollRotY + idleRotY;
+    boba.g.rotation.x = scrollTiltX + idleTiltX;
+    boba.g.rotation.z = scrollTiltZ + idleTiltZ;
+    boba.g.position.y = 1.2 + scrollBob + idleBob;
+  }
 
   if (!isDragging && fullness < 1) {
     fullness = Math.min(1, fullness + dt * 0.06);
@@ -439,7 +439,7 @@ function animate() {
   }
 
   camera.position.x = Math.sin(t * 0.04) * 0.2;
-  camera.position.y = 1.5 + Math.sin(t * 0.03) * 0.1;
+  camera.position.y = 2.8 + Math.sin(t * 0.03) * 0.1;
 
   renderer.render(scene, camera);
 }

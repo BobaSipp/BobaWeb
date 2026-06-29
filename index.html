@@ -15,6 +15,7 @@
 
   <div id="scroll-container">
 
+  <!-- ===== SECTION 0: INTRO ===== -->
   <section class="section" id="s0">
     <div class="overlay">
       <div class="corner tl">BOBA</div>
@@ -27,13 +28,15 @@
     </div>
   </section>
 
+  <!-- ===== SECTION 1: ABOUT ===== -->
   <section class="section" id="s1">
     <div class="overlay">
       <div class="corner tl">THREE</div>
       <div class="corner tr">JS</div>
       <div class="info-box">
         <h2>ABOUT</h2>
-        <p>I build interactive 3D web experiences with Three.js, WebGL & GSAP. Every project is a canvas — boba shops, game UIs, product configurators. Pixel art aesthetic meets realtime rendering.</p>
+        <p>I build interactive 3D web experiences with Three.js, WebGL & GSAP. Every project is a canvas — boba shops, game UIs, product configurators, experimental art. Pixel art meets realtime rendering.</p>
+        <p class="p2">What started as a love for retro games turned into an obsession with pushing 3D graphics into the browser. No WebGL wrapper is too weird, no shader too expensive. If it runs at 60fps on a potato, I call it a win.</p>
         <div class="links">
           <a href="https://github.com/BobaSipp" target="_blank">GITHUB</a>
           <a href="https://github.com/BobaSipp/BobaWeb" target="_blank">SOURCE</a>
@@ -44,18 +47,34 @@
     </div>
   </section>
 
+  <!-- ===== SECTION 2: SKILLS ===== -->
   <section class="section" id="s2">
     <div class="overlay">
       <div class="corner tl">STACK</div>
       <div class="corner tr">FULL</div>
       <div class="info-box">
         <h2>SKILLS</h2>
-        <p>Frontend, graphics, and tooling I work with daily.</p>
-        <div class="grid">
-          <span>THREE.JS</span><span>WEBGL</span><span>GSAP</span>
-          <span>SPLINE</span><span>REACT</span><span>NODE</span>
-          <span>PYTHON</span><span>JS</span><span>C++</span>
-          <span>BLENDER</span><span>GLSL</span><span>GIT</span>
+        <p class="p2">Frontend, graphics, and tooling I work with daily.</p>
+        <div class="skill-group">
+          <h3>3D & GRAPHICS</h3>
+          <div class="grid">
+            <span>THREE.JS</span><span>WEBGL</span><span>GLSL</span>
+            <span>SPLINE</span><span>BLENDER</span><span>R3F</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h3>FRONTEND</h3>
+          <div class="grid">
+            <span>REACT</span><span>JS</span><span>TS</span>
+            <span>GSAP</span><span>CSS</span><span>HTML</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h3>TOOLS</h3>
+          <div class="grid">
+            <span>NODE</span><span>PYTHON</span><span>C++</span>
+            <span>GIT</span><span>VITE</span><span>WEBPACK</span>
+          </div>
         </div>
       </div>
       <div class="corner bl">MIX</div>
@@ -63,17 +82,47 @@
     </div>
   </section>
 
+  <!-- ===== SECTION 3: PROJECTS ===== -->
   <section class="section" id="s3">
+    <div class="overlay">
+      <div class="corner tl">WORKS</div>
+      <div class="corner tr">SHOW</div>
+      <div class="info-box">
+        <h2>PROJECTS</h2>
+        <div class="project">
+          <h3>BOBAWEB</h3>
+          <p>Pixel-art 3D portfolio with a fully interactive boba cup. Three.js, GSAP, custom GLSL glow shaders. Drag to spill.</p>
+          <div class="project-links">
+            <a href="https://github.com/BobaSipp/BobaWeb" target="_blank">SOURCE</a>
+          </div>
+        </div>
+        <div class="project">
+          <h3>PIXELPOUR</h3>
+          <p>Browser-based particle fluid sim with retro CRT distortion. 10k particles at 120fps in WebGL2 compute shaders.</p>
+        </div>
+        <div class="project">
+          <h3>VAPORVIEW</h3>
+          <p>Synthwave city generator built in Spline + React. Real-time neon bloom, animated grid roads, interactive camera.</p>
+        </div>
+      </div>
+      <div class="corner bl">MORE</div>
+      <div class="corner br">SOON</div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: CONTACT ===== -->
+  <section class="section" id="s4">
     <div class="overlay">
       <div class="corner tl">TEA</div>
       <div class="corner tr">TIME</div>
       <div class="info-box">
         <h2>CONTACT</h2>
-        <p>Armed with boba and a mechanical keyboard. Always down to collab on weird web experiments.</p>
+        <p>Armed with boba and a mechanical keyboard. Always down to collab on weird web experiments, game jams, or anything that runs in a browser.</p>
         <div class="links">
           <a href="https://github.com/BobaSipp" target="_blank">GITHUB</a>
+          <a href="https://github.com/BobaSipp/BobaWeb" target="_blank">BOBAWEB</a>
         </div>
-        <p class="credit">BOBAWEB / 2026</p>
+        <p class="credit">BOBAWEB / 2026 — keep sipping</p>
       </div>
       <div class="corner bl">BYE</div>
       <div class="corner br">:)</div>
@@ -83,8 +132,6 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
