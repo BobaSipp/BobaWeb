@@ -4,7 +4,7 @@
 
 ![screenshot](./screenshots/s0.png)
 
-**Live:** [bobasipp.github.io/BobaWeb](https://bobasipp.github.io/BobaWeb) *(soon)*
+**Live:** [bobasipp.github.io/BobaWeb](https://bobasipp.github.io/BobaWeb)
 
 ---
 
@@ -62,7 +62,7 @@ A 3D portfolio website featuring an interactive boba cup you can drag, spill, an
 | Cursor | Custom DOM element |
 | Particles | Raw Three.js geometry |
 | Font | Press Start 2P (Google Fonts) |
-| Hosting | GitHub Pages *(eventually)* |
+| Hosting | GitHub Pages |
 
 ---
 
@@ -78,7 +78,7 @@ This project is **not finished**. Here's what's left:
 
 ### Medium Priority
 - [x] **Screenshots** — intro screenshot captured; rest still need headless WebGL rendering fix
-- [ ] **GitHub Pages deploy** — set up deployment so the live link works
+- [x] **GitHub Pages deploy** — live at https://bobasipp.github.io/BobaWeb/
 - [ ] **404 page** — because why not make a 3D 404 page too
 - [ ] **Analytics** — basic privacy-friendly visitor count would be cute
 
