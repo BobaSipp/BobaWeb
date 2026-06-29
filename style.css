@@ -139,3 +139,16 @@ body {
   color: #b08060;
   margin-top: 1.2rem;
 }
+
+.corner {
+  position: absolute;
+  font-size: 0.4rem;
+  color: #c89070;
+  letter-spacing: 2px;
+  opacity: 0.5;
+}
+
+.corner.tl { top: 8%; left: 6%; }
+.corner.tr { top: 8%; right: 6%; }
+.corner.bl { bottom: 8%; left: 6%; }
+.corner.br { bottom: 8%; right: 6%; }
