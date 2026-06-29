@@ -352,19 +352,19 @@ dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPos, 3));
 const dots = new THREE.Points(dotGeo, dotMat);
 scene.add(dots);
 
-// --- Per-section cup moods ---
-const moods = [
-  { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 },
-  { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 },
-  { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 },
-  { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 },
+// --- Per-section cup states: position, zoom, mood ---
+const sectionStates = [
+  { x: 0, y: 0, z: 0, scale: 1,     mood: { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 } },
+  { x: 3.2, y: 0, z: 0.5, scale: 2, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
+  { x: 3.2, y: 0, z: 0.5, scale: 2, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
+  { x: 3.2, y: 0, z: 0.5, scale: 2, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
 ];
 
-let currentMood = moods[0];
-let prevMood = moods[0];
-let moodBlend = 0;
+let prevState = sectionStates[0];
+let currentState = sectionStates[0];
+let stateBlend = 0;
 
-// --- Snap scroll ---
+// --- Snap scroll (scrolljacking) ---
 const sections = document.querySelectorAll('.section');
 const snapStep = 1 / (sections.length - 1);
 
@@ -373,18 +373,18 @@ ScrollTrigger.create({
   start: 'top top',
   end: 'bottom bottom',
   snap: snapStep,
-  scrub: 1.2,
+  scrub: 0.8,
   onUpdate: self => {
     const idx = Math.round(self.progress / snapStep);
-    prevMood = currentMood;
-    currentMood = moods[idx];
-    moodBlend = 0;
+    prevState = currentState;
+    currentState = sectionStates[idx];
+    stateBlend = 0;
 
     sections.forEach((sec, i) => {
       const wrap = sec.querySelector('.overlay');
       if (wrap) {
         wrap.style.opacity = i === idx ? 1 : 0;
-        wrap.style.transition = 'opacity 0.6s ease';
+        wrap.style.transition = 'opacity 0.4s ease';
       }
     });
   },
@@ -407,27 +407,30 @@ function animate() {
   const t = clock.getElapsedTime();
   const dt = 0.016;
 
-  moodBlend = Math.min(1, moodBlend + dt * 2);
+  stateBlend = Math.min(1, stateBlend + dt * 2);
 
-  const m = {
-    spin: lerp(prevMood.spin, currentMood.spin, moodBlend),
-    tilt: lerp(prevMood.tilt, currentMood.tilt, moodBlend),
-    bob: lerp(prevMood.bob, currentMood.bob, moodBlend),
-    bounce: lerp(prevMood.bounce, currentMood.bounce, moodBlend),
-    stretch: lerp(prevMood.stretch, currentMood.stretch, moodBlend),
+  const st = {
+    x: lerp(prevState.x, currentState.x, stateBlend),
+    y: lerp(prevState.y, currentState.y, stateBlend),
+    z: lerp(prevState.z, currentState.z, stateBlend),
+    scale: lerp(prevState.scale, currentState.scale, stateBlend),
+    spin: lerp(prevState.mood.spin, currentState.mood.spin, stateBlend),
+    tilt: lerp(prevState.mood.tilt, currentState.mood.tilt, stateBlend),
+    bob: lerp(prevState.mood.bob, currentState.mood.bob, stateBlend),
+    bounce: lerp(prevState.mood.bounce, currentState.mood.bounce, stateBlend),
+    stretch: lerp(prevState.mood.stretch, currentState.mood.stretch, stateBlend),
   };
 
-  // Cup always centered — it moves IN PLACE (alive animations)
-  boba.g.position.x = Math.sin(t * m.spin * 0.5) * 0.3 * m.bob;
-  boba.g.position.y = Math.sin(t * m.spin * 1.2) * 0.15 * m.bob + m.bounce * Math.abs(Math.sin(t * 2)) * 0.3;
-  boba.g.position.z = Math.cos(t * m.spin * 0.3) * 0.2 * m.bob;
+  boba.g.position.x = st.x + Math.sin(t * st.spin * 0.5) * 0.3 * st.bob;
+  boba.g.position.y = st.y + Math.sin(t * st.spin * 1.2) * 0.15 * st.bob + st.bounce * Math.abs(Math.sin(t * 2)) * 0.3;
+  boba.g.position.z = st.z + Math.cos(t * st.spin * 0.3) * 0.2 * st.bob;
 
-  boba.g.rotation.y = t * m.spin * 0.3;
-  boba.g.rotation.x = Math.sin(t * 0.5) * m.tilt;
-  boba.g.rotation.z = Math.cos(t * 0.7) * m.tilt * 0.5;
+  boba.g.rotation.y = t * st.spin * 0.3;
+  boba.g.rotation.x = Math.sin(t * 0.5) * st.tilt;
+  boba.g.rotation.z = Math.cos(t * 0.7) * st.tilt * 0.5;
 
-  const s = 1 + m.stretch * Math.sin(t * 2) * 0.1;
-  boba.g.scale.set(s, 1 / (1 + (s - 1) * 0.3), s);
+  const s = st.scale * (1 + st.stretch * Math.sin(t * 2) * 0.1);
+  boba.g.scale.set(s, st.scale / (1 + (st.stretch * Math.sin(t * 2) * 0.1) * 0.3), s);
 
   if (!isDragging && fullness < 1) {
     fullness = Math.min(1, fullness + dt * 0.06);
