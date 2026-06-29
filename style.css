@@ -170,6 +170,31 @@ body {
   margin-top: 1.2rem;
 }
 
+.links {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.links a {
+  font-size: 0.4rem;
+  color: #5a3a20;
+  background: #fdf5ec;
+  border: 2px solid #d4a080;
+  padding: 0.35rem 0.8rem;
+  text-decoration: none;
+  letter-spacing: 1px;
+  display: inline-block;
+  pointer-events: auto;
+  transition: none;
+}
+
+.links a:hover {
+  background: #d4a080;
+  color: #faf0e4;
+}
+
 .corner {
   position: absolute;
   font-size: 0.4rem;
