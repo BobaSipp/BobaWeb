@@ -6,18 +6,24 @@
   image-rendering: crisp-edges;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   font-family: 'Press Start 2P', monospace;
   background: #f5e0c8;
   color: #3d2817;
   overflow: hidden;
   height: 100vh;
-  scroll-snap-type: y mandatory;
+}
+
+#scroll-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  z-index: 20;
 }
 
 #canvas-container {
@@ -40,10 +46,11 @@ body {
 
 .section {
   position: relative;
-  z-index: 20;
+  z-index: 1;
   height: 100vh;
   width: 100vw;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   pointer-events: none;
 }
 

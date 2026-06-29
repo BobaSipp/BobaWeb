@@ -1,6 +1,7 @@
 gsap.registerPlugin(ScrollTrigger);
 
-const container = document.getElementById('canvas-container');
+const scrollContainer = document.getElementById('scroll-container');
+const canvasContainer = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
 
 const PIXEL_SCALE = 1.5;
@@ -16,7 +17,7 @@ renderer.setPixelRatio(1);
 renderer.setClearColor(0x000000, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-container.appendChild(renderer.domElement);
+canvasContainer.appendChild(renderer.domElement);
 
 const hemi = new THREE.HemisphereLight(0xf5e0c8, 0xd4a080, 0.7);
 scene.add(hemi);
@@ -381,6 +382,7 @@ function animateCupTo(idx) {
 sections.forEach((sec, i) => {
   ScrollTrigger.create({
     trigger: sec,
+    scroller: scrollContainer,
     start: 'top center',
     end: 'bottom center',
     onEnter: () => animateCupTo(i),
