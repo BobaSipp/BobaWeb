@@ -161,6 +161,17 @@ body {
   animation: blink 1s steps(2) infinite;
 }
 
+.t-extra {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.4rem;
+  color: #b08060;
+  letter-spacing: 2px;
+  opacity: 0.3;
+}
+
 @keyframes blink {
   0% { opacity: 1; }
   50% { opacity: 0; }
@@ -211,8 +222,8 @@ body {
 .info-box.right {
   left: auto;
   right: 5%;
-  max-width: 320px;
-  width: 30%;
+  max-width: 360px;
+  width: 32%;
   padding: 1.2rem 1.2rem;
   background: transparent;
   border: 2px solid #d4a080;

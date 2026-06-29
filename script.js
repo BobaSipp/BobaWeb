@@ -444,6 +444,7 @@ const sectionMoods = [
   { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 },
   { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 },
   { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 },
+  { spin: 0.8, tilt: 0.12, bob: 0.5, bounce: 0.1, stretch: 0.05 },
   { spin: 0.5, tilt: 0.08, bob: 0.3, bounce: 0.05, stretch: 0 },
 ];
 
