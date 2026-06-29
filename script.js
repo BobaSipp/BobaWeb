@@ -4,12 +4,12 @@ const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf5e0c8);
 
-const PIXEL_SCALE = 3;
+const PIXEL_SCALE = 2;
 const w = Math.floor(window.innerWidth / PIXEL_SCALE);
 const h = Math.floor(window.innerHeight / PIXEL_SCALE);
 
-const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
-camera.position.set(0, 1.5, 6);
+const camera = new THREE.PerspectiveCamera(55, w / h, 0.1, 100);
+camera.position.set(0, 1, 9);
 
 const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setSize(w, h);
@@ -137,6 +137,7 @@ function createCup() {
 }
 
 const boba = createCup();
+boba.g.scale.set(1.3, 1.3, 1.3);
 cupGroup.add(boba.g);
 
 // --- Spill particles ---
@@ -272,9 +273,9 @@ window.addEventListener('touchend', () => { isDragging = false; });
 const floorMat = new THREE.MeshStandardMaterial({
   color: 0xd4a080, transparent: true, opacity: 0.1, flatShading: true,
 });
-const floor = new THREE.Mesh(new THREE.CircleGeometry(2.5, 8), floorMat);
+const floor = new THREE.Mesh(new THREE.CircleGeometry(3, 8), floorMat);
 floor.rotation.x = -Math.PI / 2;
-floor.position.y = -1.2;
+floor.position.y = -1.5;
 scene.add(floor);
 
 // --- BG dots ---
