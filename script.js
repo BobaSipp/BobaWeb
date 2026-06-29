@@ -355,16 +355,16 @@ scene.add(dots);
 // --- Per-section cup states: position, zoom, mood ---
 const sectionStates = [
   { x: 0, y: 0, z: 0, scale: 1,     mood: { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 } },
-  { x: 3.2, y: 0, z: 0.5, scale: 2, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
-  { x: 3.2, y: 0, z: 0.5, scale: 2, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
-  { x: 3.2, y: 0, z: 0.5, scale: 2, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
+  { x: 5, y: 0.2, z: -2, scale: 3.2, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
+  { x: 5, y: 0.2, z: -2, scale: 3.2, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
+  { x: 5, y: 0.2, z: -2, scale: 3.2, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
 ];
 
 let prevState = sectionStates[0];
 let currentState = sectionStates[0];
 let stateBlend = 0;
 
-// --- Snap scroll (scrolljacking) ---
+// --- Snap scroll (scrolljacking — instant snap) ---
 const sections = document.querySelectorAll('.section');
 const snapStep = 1 / (sections.length - 1);
 
@@ -373,9 +373,10 @@ ScrollTrigger.create({
   start: 'top top',
   end: 'bottom bottom',
   snap: snapStep,
-  scrub: 0.8,
+  scrub: 0,
   onUpdate: self => {
     const idx = Math.round(self.progress / snapStep);
+    if (idx < 0 || idx >= sectionStates.length) return;
     prevState = currentState;
     currentState = sectionStates[idx];
     stateBlend = 0;
@@ -384,7 +385,7 @@ ScrollTrigger.create({
       const wrap = sec.querySelector('.overlay');
       if (wrap) {
         wrap.style.opacity = i === idx ? 1 : 0;
-        wrap.style.transition = 'opacity 0.4s ease';
+        wrap.style.transition = 'opacity 0.3s ease';
       }
     });
   },
@@ -407,7 +408,7 @@ function animate() {
   const t = clock.getElapsedTime();
   const dt = 0.016;
 
-  stateBlend = Math.min(1, stateBlend + dt * 2);
+  stateBlend = Math.min(1, stateBlend + dt * 4);
 
   const st = {
     x: lerp(prevState.x, currentState.x, stateBlend),
