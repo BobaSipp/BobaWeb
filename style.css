@@ -10,23 +10,12 @@ body {
   font-family: 'Press Start 2P', monospace;
   background: #f5e0c8;
   color: #3d2817;
-  overflow: hidden;
+  overflow-x: hidden;
   height: 100vh;
   font-size: 16px;
   cursor: none;
-}
-
-#scroll-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow-y: scroll;
   scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  z-index: 20;
-  pointer-events: none;
+  overflow-y: scroll;
 }
 
 #canvas-container {
@@ -36,11 +25,12 @@ body {
   width: 100vw;
   height: 100vh;
   z-index: 10;
-  pointer-events: auto;
+  pointer-events: none;
   background: transparent;
 }
 
 #canvas-container canvas {
+  pointer-events: none;
   width: 100vw !important;
   height: 100vh !important;
   image-rendering: pixelated;
@@ -49,7 +39,7 @@ body {
 
 .section {
   position: relative;
-  z-index: 1;
+  z-index: 20;
   height: 100vh;
   width: 100vw;
   scroll-snap-align: start;

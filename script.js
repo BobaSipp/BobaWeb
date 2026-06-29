@@ -1,4 +1,3 @@
-const scrollContainer = document.getElementById('scroll-container');
 const canvasContainer = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
 
@@ -257,49 +256,12 @@ function getDragDir(dx, dy) {
   return d;
 }
 
-renderer.domElement.addEventListener('mousedown', e => {
-  if (!hitTestCup(e.clientX, e.clientY)) return;
-  isDragging = true;
-  prevMouse.x = e.clientX;
-  prevMouse.y = e.clientY;
-  renderer.domElement.style.cursor = 'grabbing';
-});
-
-window.addEventListener('mousemove', e => {
-  if (!isDragging) {
-    if (hitTestCup(e.clientX, e.clientY)) {
-      renderer.domElement.style.cursor = 'grab';
-    } else {
-      renderer.domElement.style.cursor = 'default';
-    }
-    return;
-  }
-  const dx = e.clientX - prevMouse.x;
-  const dy = e.clientY - prevMouse.y;
-  cupGroup.rotation.y += dx * 0.01;
-  cupGroup.rotation.x += dy * 0.008;
-  cupGroup.rotation.x = Math.max(-0.5, Math.min(0.5, cupGroup.rotation.x));
-
-  const speed = Math.sqrt(dx * dx + dy * dy);
-  if (speed > 5) {
-    const origin = getCupOrigin();
-    const dir = getDragDir(dx, dy);
-    emitSpill(origin, dir, speed / 20);
-  }
-
-  fullness = Math.max(0, fullness - speed * 0.0003);
-  updateFullness();
-
-  prevMouse.x = e.clientX;
-  prevMouse.y = e.clientY;
-});
-
 window.addEventListener('mouseup', () => {
   isDragging = false;
   renderer.domElement.style.cursor = 'default';
 });
 
-renderer.domElement.addEventListener('touchstart', e => {
+window.addEventListener('touchstart', e => {
   const t = e.touches[0];
   if (!hitTestCup(t.clientX, t.clientY)) return;
   isDragging = true;
@@ -339,7 +301,7 @@ window.addEventListener('touchstart', e => {
 window.addEventListener('touchmove', e => {
   if (isDragging) return;
   const dy = touchScrollY - e.touches[0].clientY;
-  scrollContainer.scrollTop += dy;
+  window.scrollBy(0, dy);
   touchScrollY = e.touches[0].clientY;
 }, { passive: true });
 
@@ -465,14 +427,47 @@ let currentSectionIdx = 0;
 let scrollProgress = 0;
 let smoothScrollY = 0;
 
-// Wheel scrolling (scroll-container has pointer-events:none so canvas gets clicks)
-window.addEventListener('wheel', e => {
-  if (!isDragging) scrollContainer.scrollTop += e.deltaY;
-}, { passive: true });
+// All on window since canvas has pointer-events:none (lets body scroll natively)
+window.addEventListener('mousedown', e => {
+  if (!hitTestCup(e.clientX, e.clientY)) return;
+  isDragging = true;
+  prevMouse.x = e.clientX;
+  prevMouse.y = e.clientY;
+  renderer.domElement.style.cursor = 'grabbing';
+});
 
-scrollContainer.addEventListener('scroll', () => {
-  const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-  scrollProgress = maxScroll > 0 ? scrollContainer.scrollTop / maxScroll : 0;
+window.addEventListener('mousemove', e => {
+  if (!isDragging) {
+    if (hitTestCup(e.clientX, e.clientY)) {
+      renderer.domElement.style.cursor = 'grab';
+    } else {
+      renderer.domElement.style.cursor = 'default';
+    }
+    return;
+  }
+  const dx = e.clientX - prevMouse.x;
+  const dy = e.clientY - prevMouse.y;
+  cupGroup.rotation.y += dx * 0.01;
+  cupGroup.rotation.x += dy * 0.008;
+  cupGroup.rotation.x = Math.max(-0.5, Math.min(0.5, cupGroup.rotation.x));
+
+  const speed = Math.sqrt(dx * dx + dy * dy);
+  if (speed > 5) {
+    const origin = getCupOrigin();
+    const dir = getDragDir(dx, dy);
+    emitSpill(origin, dir, speed / 20);
+  }
+
+  fullness = Math.max(0, fullness - speed * 0.0003);
+  updateFullness();
+
+  prevMouse.x = e.clientX;
+  prevMouse.y = e.clientY;
+});
+
+window.addEventListener('scroll', () => {
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  scrollProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
 
   sections.forEach((sec, i) => {
     const rect = sec.getBoundingClientRect();
