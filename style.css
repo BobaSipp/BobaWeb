@@ -70,6 +70,13 @@ body {
   top: 14%;
   left: 50%;
   transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.tilde {
+  display: inline-block;
+  vertical-align: middle;
+  transform: translateY(-0.15em);
 }
 
 .overlay .t-sub {
