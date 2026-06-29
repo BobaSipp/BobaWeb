@@ -11,6 +11,8 @@
 </head>
 <body>
 
+  <div id="cursor-cup"></div>
+
   <div id="canvas-container"></div>
 
   <div id="scroll-container">
@@ -25,6 +27,8 @@
       <div class="corner bl">CLICK &</div>
       <div class="corner br">DRAG</div>
       <div class="t-hint">[ SPILL THE TEA ]</div>
+      <div class="floating fl-tr">REALTIME // WEBGL</div>
+      <div class="floating fl-bl">PIXEL // 3D</div>
     </div>
   </section>
 
@@ -41,6 +45,12 @@
           <a href="https://github.com/BobaSipp" target="_blank">GITHUB</a>
           <a href="https://github.com/BobaSipp/BobaWeb" target="_blank">SOURCE</a>
         </div>
+      </div>
+      <div class="info-box right">
+        <div class="stat"><span class="stat-num">05+</span><span class="stat-lbl">YEARS CODING</span></div>
+        <div class="stat"><span class="stat-num">30+</span><span class="stat-lbl">PROJECTS SHIPPED</span></div>
+        <div class="stat"><span class="stat-num">∞</span><span class="stat-lbl">CUPS OF BOBA</span></div>
+        <p class="p2" style="margin-top:1rem;">Built this whole site with Three.js, raw CSS, and sheer force of will. No frameworks, no bloat.</p>
       </div>
       <div class="corner bl">WEB</div>
       <div class="corner br">DEV</div>
@@ -60,22 +70,36 @@
           <div class="grid">
             <span>THREE.JS</span><span>WEBGL</span><span>GLSL</span>
             <span>SPLINE</span><span>BLENDER</span><span>R3F</span>
+            <span>SHADERS</span><span>PARTICLES</span>
           </div>
         </div>
         <div class="skill-group">
           <h3>FRONTEND</h3>
           <div class="grid">
             <span>REACT</span><span>JS</span><span>TS</span>
-            <span>GSAP</span><span>CSS</span><span>HTML</span>
+            <span>GSAP</span><span>CSS</span><span>HTML5</span>
+            <span>VITE</span><span>WEBPACK</span>
           </div>
         </div>
         <div class="skill-group">
-          <h3>TOOLS</h3>
+          <h3>TOOLS & LANG</h3>
           <div class="grid">
             <span>NODE</span><span>PYTHON</span><span>C++</span>
-            <span>GIT</span><span>VITE</span><span>WEBPACK</span>
+            <span>GIT</span><span>BASH</span><span>DOCKER</span>
+            <span>RUST</span><span>SQL</span>
           </div>
         </div>
+      </div>
+      <div class="info-box right">
+        <p style="font-size:0.5rem;line-height:1.8;margin-bottom:0.8rem;">CURRENTLY DEEP DIVING INTO:</p>
+        <div class="skill-group">
+          <h3>LEARNING</h3>
+          <div class="grid">
+            <span>WEBGPU</span><span>WASM</span><span>COMPUTE</span>
+          </div>
+        </div>
+        <p class="p2" style="margin-top:0.8rem;">"The best shader is the one you haven't written yet." — someone, probably</p>
+        <p class="p2" style="margin-top:0.5rem;">AVAILABLE FOR FREELANCE / COLLABS</p>
       </div>
       <div class="corner bl">MIX</div>
       <div class="corner br">CODE</div>
@@ -91,19 +115,45 @@
         <h2>PROJECTS</h2>
         <div class="project">
           <h3>BOBAWEB</h3>
-          <p>Pixel-art 3D portfolio with a fully interactive boba cup. Three.js, GSAP, custom GLSL glow shaders. Drag to spill.</p>
+          <p>Pixel-art 3D portfolio with a fully interactive boba cup. Three.js, custom GLSL glow shaders, GSAP scroll. Drag to spill.</p>
           <div class="project-links">
             <a href="https://github.com/BobaSipp/BobaWeb" target="_blank">SOURCE</a>
+            <span class="tag">THREE.JS</span>
+            <span class="tag">GLSL</span>
           </div>
         </div>
         <div class="project">
           <h3>PIXELPOUR</h3>
-          <p>Browser-based particle fluid sim with retro CRT distortion. 10k particles at 120fps in WebGL2 compute shaders.</p>
+          <p>Browser-based particle fluid sim with retro CRT distortion. 10k particles at 120fps via WebGL2 compute shaders. Fully interactive.</p>
+          <div class="project-links">
+            <span class="tag">WEBGL2</span>
+            <span class="tag">COMPUTE</span>
+          </div>
         </div>
         <div class="project">
           <h3>VAPORVIEW</h3>
-          <p>Synthwave city generator built in Spline + React. Real-time neon bloom, animated grid roads, interactive camera.</p>
+          <p>Synthwave city generator built in Spline + React. Real-time neon bloom, animated grid roads, interactive camera orbit.</p>
+          <div class="project-links">
+            <span class="tag">SPLINE</span>
+            <span class="tag">REACT</span>
+          </div>
         </div>
+        <div class="project">
+          <h3>BOBA API</h3>
+          <p>REST API for tracking boba tea shops, menu items, and ratings. Built with Node, Express, MongoDB. 50+ shops indexed.</p>
+          <div class="project-links">
+            <span class="tag">NODE</span>
+            <span class="tag">MONGO</span>
+          </div>
+        </div>
+      </div>
+      <div class="info-box right">
+        <p style="font-size:0.5rem;line-height:1.8;margin-bottom:0.6rem;">TECH I REACH FOR:</p>
+        <div class="grid" style="margin-bottom:1rem;">
+          <span>THREE</span><span>GSAP</span><span>REACT</span>
+          <span>NODE</span><span>PYTHON</span>
+        </div>
+        <p style="font-size:0.45rem;line-height:1.7;color:#7a5030;">Always shipping. Always iterating. The web is my canvas and boba is my fuel.</p>
       </div>
       <div class="corner bl">MORE</div>
       <div class="corner br">SOON</div>
@@ -118,11 +168,22 @@
       <div class="info-box">
         <h2>CONTACT</h2>
         <p>Armed with boba and a mechanical keyboard. Always down to collab on weird web experiments, game jams, or anything that runs in a browser.</p>
+        <p class="p2">Open for freelance, full-time, or just to chat about shaders and synthwave.</p>
         <div class="links">
           <a href="https://github.com/BobaSipp" target="_blank">GITHUB</a>
           <a href="https://github.com/BobaSipp/BobaWeb" target="_blank">BOBAWEB</a>
         </div>
-        <p class="credit">BOBAWEB / 2026 — keep sipping</p>
+      </div>
+      <div class="info-box right">
+        <p style="font-size:0.55rem;line-height:2;">FIND ME ELSEWHERE:</p>
+        <p style="font-size:0.4rem;line-height:2.2;color:#7a5030;margin-top:0.4rem;">
+          GITHUB / BOBAWEB<br>
+          DAILY: 3D EXPERIMENTS<br>
+          WEEKLY: GAME PROTOTYPES<br>
+          ALWAYS: OPEN TO IDEAS
+        </p>
+        <p class="credit" style="margin-top:1.5rem;">BOBAWEB / 2026</p>
+        <p class="credit" style="margin-top:0.3rem;">KEEP SIPPING</p>
       </div>
       <div class="corner bl">BYE</div>
       <div class="corner br">:)</div>

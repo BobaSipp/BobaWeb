@@ -332,6 +332,92 @@ window.addEventListener('touchmove', e => {
 
 window.addEventListener('touchend', () => { isDragging = false; });
 
+// --- Background flying boba balls ---
+const bgBalls = [];
+const bgBallMat = new THREE.MeshStandardMaterial({
+  color: 0xd4a080, roughness: 0.7, flatShading: true, transparent: true, opacity: 0.15,
+});
+for (let i = 0; i < 24; i++) {
+  const s = 0.08 + Math.random() * 0.15;
+  const m = new THREE.Mesh(new THREE.SphereGeometry(s, 6, 6), bgBallMat.clone());
+  m.position.set(
+    (Math.random() - 0.5) * 18,
+    (Math.random() - 0.5) * 10 + 1,
+    -4 - Math.random() * 8,
+  );
+  m.userData = {
+    vel: new THREE.Vector3(
+      (Math.random() - 0.5) * 0.3,
+      (Math.random() - 0.5) * 0.2,
+      (Math.random() - 0.5) * 0.1,
+    ),
+    phase: Math.random() * Math.PI * 2,
+  };
+  m.material.opacity = 0.05 + Math.random() * 0.15;
+  scene.add(m);
+  bgBalls.push(m);
+}
+
+// --- Cursor spill trail ---
+const cursorSpills = [];
+const cursorTrail = [];
+for (let i = 0; i < 12; i++) {
+  const el = document.createElement('div');
+  el.className = 'cursor-spill';
+  document.body.appendChild(el);
+  cursorTrail.push({ el, x: 0, y: 0, life: 0 });
+}
+
+const cursorCup = document.getElementById('cursor-cup');
+let mouseX = -100, mouseY = -100;
+let cursorX = -100, cursorY = -100;
+let cursorSpeed = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+function updateCursor() {
+  const dx = mouseX - cursorX;
+  const dy = mouseY - cursorY;
+  cursorX += dx * 0.18;
+  cursorY += dy * 0.18;
+  cursorSpeed = Math.sqrt(dx * dx + dy * dy);
+
+  cursorCup.style.left = cursorX + 'px';
+  cursorCup.style.top = cursorY + 'px';
+
+  const blur = Math.min(4, cursorSpeed * 0.03);
+  cursorCup.style.filter = `blur(${blur}px)`;
+  cursorCup.style.opacity = Math.min(1, 0.5 + cursorSpeed * 0.02);
+
+  if (cursorSpeed > 20) {
+    const spill = cursorTrail.find(p => p.life <= 0);
+    if (spill) {
+      spill.x = cursorX + (Math.random() - 0.5) * 10;
+      spill.y = cursorY + (Math.random() - 0.5) * 10;
+      spill.life = 0.3 + Math.random() * 0.4;
+      spill.el.style.left = spill.x + 'px';
+      spill.el.style.top = spill.y + 'px';
+      spill.el.style.opacity = 1;
+      spill.el.style.transform = `scale(${0.3 + Math.random() * 0.5})`;
+    }
+  }
+
+  cursorTrail.forEach(p => {
+    if (p.life <= 0) return;
+    p.life -= 0.016;
+    if (p.life <= 0) {
+      p.el.style.opacity = 0;
+    } else {
+      p.el.style.opacity = p.life / 0.5;
+      const s = 0.3 + (1 - p.life / 0.5) * 0.4;
+      p.el.style.transform = `scale(${s})`;
+    }
+  });
+}
+
 // --- Floor ---
 const floorMat = new THREE.MeshStandardMaterial({
   color: 0xd4a080, transparent: true, opacity: 0.1, flatShading: true,
@@ -440,6 +526,21 @@ function animate() {
 
   camera.position.x = Math.sin(t * 0.04) * 0.2;
   camera.position.y = 2.8 + Math.sin(t * 0.03) * 0.1;
+
+  // Background balls
+  bgBalls.forEach(b => {
+    b.position.x += b.userData.vel.x * dt * 3;
+    b.position.y += b.userData.vel.y * dt * 3;
+    b.position.z += b.userData.vel.z * dt * 3;
+    if (b.position.x > 9) b.position.x = -9;
+    if (b.position.x < -9) b.position.x = 9;
+    if (b.position.y > 6) b.position.y = -4;
+    if (b.position.y < -4) b.position.y = 6;
+    b.rotation.x += b.userData.vel.x * 0.02;
+    b.rotation.y += b.userData.vel.y * 0.02;
+  });
+
+  updateCursor();
 
   renderer.render(scene, camera);
 }
