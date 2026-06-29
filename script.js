@@ -4,12 +4,12 @@ const scrollContainer = document.getElementById('scroll-container');
 const canvasContainer = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
 
-const PIXEL_SCALE = 1;
+const PIXEL_SCALE = 2.5;
 const w = Math.floor(window.innerWidth / PIXEL_SCALE);
 const h = Math.floor(window.innerHeight / PIXEL_SCALE);
 
-const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-camera.position.set(0, 1.5, 9);
+const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
+camera.position.set(0, 1.5, 12);
 
 const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
 renderer.setSize(w, h);
@@ -137,7 +137,7 @@ function createCup() {
 };
 
 const boba = createCup();
-boba.g.scale.set(1.8, 1.8, 1.8);
+boba.g.scale.set(0.9, 0.9, 0.9);
 cupGroup.add(boba.g);
 
 // --- Spill particles ---
@@ -356,9 +356,9 @@ scene.add(dots);
 // --- Per-section cup states ---
 const sectionStates = [
   { x: 0, y: 0, z: 0, scale: 1,   mood: { spin: 0.3, tilt: 0.05, bob: 0.3, bounce: 0, stretch: 0 } },
-  { x: 2, y: 0, z: 0, scale: 0.9, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
-  { x: 2, y: 0, z: 0, scale: 0.9, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
-  { x: 2, y: 0, z: 0, scale: 0.9, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
+  { x: 2.5, y: 0, z: 0, scale: 1.3, mood: { spin: 0.6, tilt: 0.15, bob: 0.4, bounce: 0, stretch: 0 } },
+  { x: 2.5, y: 0, z: 0, scale: 1.3, mood: { spin: 1.2, tilt: 0.1, bob: 0.7, bounce: 0.15, stretch: 0.08 } },
+  { x: 2.5, y: 0, z: 0, scale: 1.3, mood: { spin: 0.2, tilt: 0.03, bob: 0.2, bounce: 0, stretch: 0 } },
 ];
 
 // --- Live cup animation on section enter ---
