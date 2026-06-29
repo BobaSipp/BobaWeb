@@ -2,7 +2,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf5e0c8);
 
 const PIXEL_SCALE = 2;
 const w = Math.floor(window.innerWidth / PIXEL_SCALE);
@@ -11,10 +10,10 @@ const h = Math.floor(window.innerHeight / PIXEL_SCALE);
 const camera = new THREE.PerspectiveCamera(55, w / h, 0.1, 100);
 camera.position.set(0, 1, 9);
 
-const renderer = new THREE.WebGLRenderer({ antialias: false });
+const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
 renderer.setSize(w, h);
 renderer.setPixelRatio(1);
-renderer.setClearColor(0xf5e0c8, 1);
+renderer.setClearColor(0x000000, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
