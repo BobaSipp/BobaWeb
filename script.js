@@ -196,6 +196,24 @@ function updateSpill(dt) {
   });
 }
 
+// --- Raycaster for cup hit detection ---
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+let cupMeshes = [];
+
+boba.g.traverse(child => {
+  if (child.isMesh) cupMeshes.push(child);
+});
+
+function hitTestCup(clientX, clientY) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const hits = raycaster.intersectObjects(cupMeshes, false);
+  return hits.length > 0;
+}
+
 // --- Drag ---
 let isDragging = false;
 let prevMouse = { x: 0, y: 0 };
@@ -214,13 +232,22 @@ function getDragDir(dx, dy) {
 }
 
 renderer.domElement.addEventListener('mousedown', e => {
+  if (!hitTestCup(e.clientX, e.clientY)) return;
   isDragging = true;
   prevMouse.x = e.clientX;
   prevMouse.y = e.clientY;
+  renderer.domElement.style.cursor = 'grabbing';
 });
 
 window.addEventListener('mousemove', e => {
-  if (!isDragging) return;
+  if (!isDragging) {
+    if (hitTestCup(e.clientX, e.clientY)) {
+      renderer.domElement.style.cursor = 'grab';
+    } else {
+      renderer.domElement.style.cursor = 'default';
+    }
+    return;
+  }
   const dx = e.clientX - prevMouse.x;
   const dy = e.clientY - prevMouse.y;
   cupGroup.rotation.y += dx * 0.01;
@@ -238,10 +265,14 @@ window.addEventListener('mousemove', e => {
   prevMouse.y = e.clientY;
 });
 
-window.addEventListener('mouseup', () => { isDragging = false; });
+window.addEventListener('mouseup', () => {
+  isDragging = false;
+  renderer.domElement.style.cursor = 'default';
+});
 
 renderer.domElement.addEventListener('touchstart', e => {
   const t = e.touches[0];
+  if (!hitTestCup(t.clientX, t.clientY)) return;
   isDragging = true;
   prevMouse.x = t.clientX;
   prevMouse.y = t.clientY;
