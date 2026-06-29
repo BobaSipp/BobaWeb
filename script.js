@@ -337,23 +337,23 @@ const bgBalls = [];
 const bgBallMat = new THREE.MeshStandardMaterial({
   color: 0xd4a080, roughness: 0.7, flatShading: true, transparent: true, opacity: 0.15,
 });
-for (let i = 0; i < 24; i++) {
-  const s = 0.08 + Math.random() * 0.15;
+for (let i = 0; i < 70; i++) {
+  const s = 0.06 + Math.random() * 0.25;
   const m = new THREE.Mesh(new THREE.SphereGeometry(s, 6, 6), bgBallMat.clone());
   m.position.set(
-    (Math.random() - 0.5) * 18,
-    (Math.random() - 0.5) * 10 + 1,
-    -4 - Math.random() * 8,
+    (Math.random() - 0.5) * 24,
+    (Math.random() - 0.5) * 14 + 1,
+    -3 - Math.random() * 12,
   );
   m.userData = {
     vel: new THREE.Vector3(
-      (Math.random() - 0.5) * 0.3,
-      (Math.random() - 0.5) * 0.2,
-      (Math.random() - 0.5) * 0.1,
+      (Math.random() - 0.5) * 0.5,
+      (Math.random() - 0.5) * 0.35,
+      (Math.random() - 0.5) * 0.15,
     ),
     phase: Math.random() * Math.PI * 2,
   };
-  m.material.opacity = 0.05 + Math.random() * 0.15;
+  m.material.opacity = 0.08 + Math.random() * 0.2;
   scene.add(m);
   bgBalls.push(m);
 }
