@@ -26,6 +26,7 @@ body {
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   z-index: 20;
+  pointer-events: none;
 }
 
 #canvas-container {
@@ -163,13 +164,34 @@ body {
 
 .t-extra {
   position: absolute;
-  bottom: 15%;
+  bottom: 14%;
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.4rem;
   color: #b08060;
   letter-spacing: 2px;
   opacity: 0.3;
+}
+
+.t-line {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.4rem;
+  color: #b08060;
+  letter-spacing: 2px;
+  opacity: 0.2;
+  white-space: nowrap;
+}
+
+.t-line.sub {
+  font-size: 0.3rem;
+  opacity: 0.15;
+  bottom: 8%;
+}
+
+.t-line:first-of-type {
+  bottom: 11%;
 }
 
 @keyframes blink {
@@ -183,21 +205,35 @@ body {
   font-size: 0.5rem;
   color: #c89070;
   letter-spacing: 2px;
-  opacity: 0.25;
+  opacity: 0.2;
 }
 
 .floating.fl-tr {
   top: 30%;
-  right: 8%;
+  right: 10%;
   transform: rotate(90deg);
   transform-origin: right center;
 }
 
-.floating.fl-bl {
-  bottom: 30%;
-  left: 8%;
+.floating.fl-tl {
+  top: 30%;
+  left: 10%;
   transform: rotate(-90deg);
   transform-origin: left center;
+}
+
+.floating.fl-bl {
+  bottom: 30%;
+  left: 10%;
+  transform: rotate(-90deg);
+  transform-origin: left center;
+}
+
+.floating.fl-br {
+  bottom: 30%;
+  right: 10%;
+  transform: rotate(90deg);
+  transform-origin: right center;
 }
 
 /* --- INFO BOXES: left side --- */

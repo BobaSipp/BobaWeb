@@ -332,13 +332,24 @@ window.addEventListener('touchmove', e => {
 
 window.addEventListener('touchend', () => { isDragging = false; });
 
+let touchScrollY = 0;
+window.addEventListener('touchstart', e => {
+  touchScrollY = e.touches[0].clientY;
+}, { passive: true });
+window.addEventListener('touchmove', e => {
+  if (isDragging) return;
+  const dy = touchScrollY - e.touches[0].clientY;
+  scrollContainer.scrollTop += dy;
+  touchScrollY = e.touches[0].clientY;
+}, { passive: true });
+
 // --- Background flying boba balls ---
 const bgBalls = [];
 const bgBallMat = new THREE.MeshStandardMaterial({
   color: 0xd4a080, roughness: 0.7, flatShading: true, transparent: true, opacity: 0.15,
 });
 for (let i = 0; i < 70; i++) {
-  const s = 0.06 + Math.random() * 0.25;
+  const s = 0.04 + Math.random() * 0.1;
   const m = new THREE.Mesh(new THREE.SphereGeometry(s, 6, 6), bgBallMat.clone());
   m.position.set(
     (Math.random() - 0.5) * 24,
@@ -453,6 +464,11 @@ const sections = document.querySelectorAll('.section');
 let currentSectionIdx = 0;
 let scrollProgress = 0;
 let smoothScrollY = 0;
+
+// Wheel scrolling (scroll-container has pointer-events:none so canvas gets clicks)
+window.addEventListener('wheel', e => {
+  if (!isDragging) scrollContainer.scrollTop += e.deltaY;
+}, { passive: true });
 
 scrollContainer.addEventListener('scroll', () => {
   const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
