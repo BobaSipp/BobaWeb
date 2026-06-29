@@ -133,8 +133,8 @@ function createCup() {
   tip.position.add(off);
   g.add(tip);
 
-  return { g, pearls };
-}
+  return { g, pearls, tea, surface: top };
+};
 
 const boba = createCup();
 boba.g.scale.set(1.3, 1.3, 1.3);
@@ -214,6 +214,33 @@ function hitTestCup(clientX, clientY) {
   return hits.length > 0;
 }
 
+// --- Fullness ---
+let fullness = 1;
+const TEA_BOTTOM_Y = -0.45;
+const TEA_FULL_HEIGHT = 1.2;
+
+function updateFullness() {
+  const f = Math.max(0, Math.min(1, fullness));
+
+  const teaH = f * TEA_FULL_HEIGHT;
+  boba.tea.position.y = TEA_BOTTOM_Y + teaH / 2;
+  boba.tea.scale.y = f;
+
+  boba.tea.material.opacity = 0.3 + f * 0.7;
+  boba.tea.material.transparent = true;
+
+  boba.surface.position.y = TEA_BOTTOM_Y + teaH;
+  boba.surface.scale.x = f;
+  boba.surface.scale.y = f;
+  boba.surface.material.opacity = f * 0.6;
+  boba.surface.material.transparent = true;
+
+  boba.pearls.forEach((p, i) => {
+    const threshold = 1 - (i / boba.pearls.length) * 0.8;
+    p.visible = f >= threshold;
+  });
+}
+
 // --- Drag ---
 let isDragging = false;
 let prevMouse = { x: 0, y: 0 };
@@ -261,6 +288,9 @@ window.addEventListener('mousemove', e => {
     emitSpill(origin, dir, speed / 20);
   }
 
+  fullness = Math.max(0, fullness - speed * 0.0003);
+  updateFullness();
+
   prevMouse.x = e.clientX;
   prevMouse.y = e.clientY;
 });
@@ -293,6 +323,9 @@ window.addEventListener('touchmove', e => {
     const dir = getDragDir(dx, dy);
     emitSpill(origin, dir, speed / 20);
   }
+
+  fullness = Math.max(0, fullness - speed * 0.0003);
+  updateFullness();
 
   prevMouse.x = t.clientX;
   prevMouse.y = t.clientY;
@@ -396,6 +429,11 @@ function animate() {
 
   const s = 1 + m.stretch * Math.sin(t * 2) * 0.1;
   boba.g.scale.set(s, 1 / (1 + (s - 1) * 0.3), s);
+
+  if (!isDragging && fullness < 1) {
+    fullness = Math.min(1, fullness + dt * 0.06);
+    updateFullness();
+  }
 
   boba.pearls.forEach((p, i) => {
     p.position.y += Math.sin(t * 1.5 + i * 2) * 0.0008;
